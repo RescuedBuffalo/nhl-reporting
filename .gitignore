@@ -178,3 +178,6 @@ nhl_stats.db
 
 # Ignore CSV
 *.csv
+
+# Ignore Images
+*.png
