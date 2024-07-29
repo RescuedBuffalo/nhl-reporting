@@ -20,6 +20,13 @@ FAILED_SHOT_ATTEMPT = 537
 HOME = 1
 AWAY = 2
 
+# Game Types
+PRESEASON_GAME = 1
+REGULAR_SEASON_GAME = 2
+PLAYOFF_GAME = 3
+ALL_STAR_GAME = 4
+PWHL_GAME = 12
+
 # Situation Object
 class Situation:
 
