@@ -1,3 +1,5 @@
+import json
+
 def createFullName(row):
     '''
     Function to format first name and last name as "last_name, first_name"
