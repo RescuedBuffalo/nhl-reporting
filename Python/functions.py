@@ -1,4 +1,5 @@
 import json
+from functions import *
 
 def createFullName(row):
     '''
@@ -44,3 +45,21 @@ def getShootingPlayerId(row):
         return event_details.get('scoringPlayerId', '')
     else:
         return event_details.get('shootingPlayerId', '')
+    
+def getEventOwner(row):
+    '''
+    Function to get the team that owns the event
+    @param row: row of a dataframe
+    '''
+
+    if row['event_details'] is not None:
+        event_details = json.loads(row['event_details'])
+    else: 
+        return None
+    keys = ['hitteePlayerId', 'blockingPlayerId', 'servedByPlayerId', 'scoringPlayerId', 'assist1PlayerId', 'shootingPlayerId', 
+     'drawnByPlayerId', 'hittingPlayerId', 'committedByPlayerId', 'assist2PlayerId', 'winningPlayerId', 'losingPlayerId']
+    
+    for key in keys:
+        if event_details.get(key) is not None:
+            return event_details.get(key)
+        
