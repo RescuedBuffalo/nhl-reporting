@@ -181,3 +181,8 @@ nhl_stats.db
 
 # Ignore Images
 *.png
+
+instructions.md
+supervised_instructions.md
+
+archive/
