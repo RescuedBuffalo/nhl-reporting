@@ -3,7 +3,7 @@ import requests
 import numpy as np
 import time
 import sqlite3
-from definitions import *
+from .definitions import *
 
 def createFullName(row):
     '''
@@ -96,30 +96,65 @@ def rate_limited_get(url, params=None, delay=0.5, max_retries=3):
 
 def get_game_ids_for_season(season):
     '''
-    Fetch all game IDs for a given NHL season using team schedule endpoints.
+    Fetch all game IDs for a given NHL season using the season schedule endpoint.
     @param season: Season in format '20232024'
     '''
-    # Get all teams first
-    teams_data = fetch_nhl_api('/season')
-    
-    # Get a list of team abbreviations (we'll use one team to get all games)
-    # For now, let's use a known team like TOR to get the season schedule
-    team_code = 'TOR'  # We can use any team since schedule shows all games
-    
-    endpoint = f'/club-schedule-season/{team_code}/{season}'
     try:
+        # Use the season schedule endpoint to get ALL games
+        endpoint = f'/schedule/{season}'
         data = fetch_nhl_api(endpoint)
         game_ids = []
         
-        # Extract game IDs from the schedule
-        if 'games' in data:
-            for game in data['games']:
+        # Extract game IDs from the season schedule
+        if 'gameWeek' in data:
+            for week in data['gameWeek']:
+                for date_entry in week.get('games', []):
+                    for game in date_entry.get('games', []):
+                        # Only include regular season games (gameType = 2)
+                        if game.get('gameType') == 2:
                 game_ids.append(game['id'])
         
+        # Remove duplicates and sort
+        game_ids = sorted(list(set(game_ids)))
+        print(f"Found {len(game_ids)} regular season games for {season}")
         return game_ids
+        
     except Exception as e:
         print(f"Error getting schedule for {season}: {e}")
-        return []
+        print("Falling back to team-based approach...")
+        
+        # Fallback: Get games from multiple teams to ensure coverage
+        all_game_ids = set()
+        
+        # List of NHL team abbreviations to ensure we get all games
+        nhl_teams = [
+            'ANA', 'BOS', 'BUF', 'CGY', 'CAR', 'CHI', 'COL', 'CBJ', 'DAL', 'DET',
+            'EDM', 'FLA', 'LAK', 'MIN', 'MTL', 'NSH', 'NJD', 'NYI', 'NYR', 'OTT',
+            'PHI', 'PIT', 'SJS', 'SEA', 'STL', 'TBL', 'TOR', 'VAN', 'VGK', 'WSH',
+            'WPG', 'ARI'  # Arizona (now Utah)
+        ]
+        
+        for team_code in nhl_teams:
+            try:
+                endpoint = f'/club-schedule-season/{team_code}/{season}'
+                team_data = fetch_nhl_api(endpoint)
+                
+                if 'games' in team_data:
+                    for game in team_data['games']:
+                        # Only include regular season games
+                        if game.get('gameType') == 2:
+                            all_game_ids.add(game['id'])
+                            
+                # Small delay to be respectful to API
+                time.sleep(0.1)
+                
+            except Exception as team_error:
+                print(f"Warning: Could not get schedule for team {team_code}: {team_error}")
+                continue
+        
+        game_ids = sorted(list(all_game_ids))
+        print(f"Fallback method found {len(game_ids)} regular season games for {season}")
+        return game_ids
 
 def get_all_game_ids_for_date_range(start_date, end_date):
     '''
@@ -248,27 +283,88 @@ def fetch_and_store_game_data(gamePk, db_path='nhl_stats.db', delay=0.5):
         }
         insert_game(conn, game)
         
+        # Store team information
+        home_team = feed.get('homeTeam', {})
+        away_team = feed.get('awayTeam', {})
+        
+        if home_team.get('id'):
+            team_data = {
+                'id': home_team.get('id'),
+                'name': home_team.get('name', ''),
+                'abbreviation': home_team.get('abbrev', '')
+            }
+            insert_team(conn, team_data)
+            
+        if away_team.get('id'):
+            team_data = {
+                'id': away_team.get('id'),
+                'name': away_team.get('name', ''),
+                'abbreviation': away_team.get('abbrev', '')
+            }
+            insert_team(conn, team_data)
+        
+        # Process roster information from rosterSpots
+        roster_spots = feed.get('rosterSpots', [])
+        for player_spot in roster_spots:
+            # Extract player information from rosterSpots structure
+            first_name = player_spot.get('firstName', {})
+            last_name = player_spot.get('lastName', {})
+            
+            # Handle name structure (can be dict with 'default' key or string)
+            if isinstance(first_name, dict):
+                first_name = first_name.get('default', '')
+            if isinstance(last_name, dict):
+                last_name = last_name.get('default', '')
+            
+            player_info = {
+                'id': player_spot.get('playerId'),
+                'fullName': f"{first_name} {last_name}".strip(),
+                'position': player_spot.get('positionCode', ''),
+                'shootsCatches': '',  # Not available in rosterSpots
+                'birthDate': ''  # Not available in rosterSpots
+            }
+            
+            if player_info['id']:
+                insert_player(conn, player_info)
+        
         # Insert events from the new API structure
         for event in feed.get('plays', []):
-            # Extract coordinates from the event details
-            coords = event.get('details', {})
+            event_type = event.get('typeDescKey', '')
+            
+            # Only process shot and goal events
+            if event_type not in ['shot-on-goal', 'goal']:
+                continue
+                
+            # Extract coordinates and other details
+            details = event.get('details', {})
+            
+            # Determine team ID from event owner
+            team_id = details.get('eventOwnerTeamId')
+            
+            # Extract player ID based on event type
+            player_id = None
+            if event_type == 'goal':
+                player_id = details.get('scoringPlayerId')
+            elif event_type == 'shot-on-goal':
+                player_id = details.get('shootingPlayerId')
             
             event_dict = {
                 'gamePk': gamePk,
                 'eventIdx': event.get('eventId', 0),
-                'eventType': event.get('typeDescKey', ''),
+                'eventType': event_type,
                 'period': event.get('periodDescriptor', {}).get('number', 0),
                 'periodTime': event.get('timeInPeriod', ''),
-                'teamId': event.get('details', {}).get('eventOwnerTeamId'),
-                'playerId': None,  # Will need to extract from players array if available
-                'x': coords.get('xCoord'),
-                'y': coords.get('yCoord'),
+                'teamId': team_id,
+                'playerId': player_id,
+                'x': details.get('xCoord'),
+                'y': details.get('yCoord'),
                 'details': event
             }
             insert_event(conn, event_dict)
             
     except Exception as e:
         print(f"Error processing game {gamePk}: {e}")
+        raise  # Re-raise to allow retry logic in calling function
     finally:
         conn.close()
         time.sleep(delay)

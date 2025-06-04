@@ -1,0 +1,212 @@
+[
+  {
+    "name": "Nikita Kucherov",
+    "team": "TBL",
+    "goals": 37,
+    "assists": 84,
+    "games": 78
+  },
+  {
+    "name": "Nathan MacKinnon",
+    "team": "COL",
+    "goals": 32,
+    "assists": 84,
+    "games": 79
+  },
+  {
+    "name": "Leon Draisaitl",
+    "team": "EDM",
+    "goals": 52,
+    "assists": 54,
+    "games": 71
+  },
+  {
+    "name": "David Pastrnak",
+    "team": "BOS",
+    "goals": 43,
+    "assists": 63,
+    "games": 82
+  },
+  {
+    "name": "Mitch Marner",
+    "team": "TOR",
+    "goals": 27,
+    "assists": 75,
+    "games": 81
+  },
+  {
+    "name": "Connor McDavid",
+    "team": "EDM",
+    "goals": 26,
+    "assists": 74,
+    "games": 67
+  },
+  {
+    "name": "Kyle Connor",
+    "team": "WPG",
+    "goals": 41,
+    "assists": 56,
+    "games": 82
+  },
+  {
+    "name": "Jack Eichel",
+    "team": "VGK",
+    "goals": 28,
+    "assists": 66,
+    "games": 77
+  },
+  {
+    "name": "Cale Makar",
+    "team": "COL",
+    "goals": 30,
+    "assists": 62,
+    "games": 80
+  },
+  {
+    "name": "Sidney Crosby",
+    "team": "PIT",
+    "goals": 25,
+    "assists": 65,
+    "games": 80
+  },
+  {
+    "name": "Auston Matthews",
+    "team": "TOR",
+    "goals": 35,
+    "assists": 45,
+    "games": 75
+  },
+  {
+    "name": "Artemi Panarin",
+    "team": "NYR",
+    "goals": 28,
+    "assists": 62,
+    "games": 78
+  },
+  {
+    "name": "Mikko Rantanen",
+    "team": "COL",
+    "goals": 35,
+    "assists": 55,
+    "games": 80
+  },
+  {
+    "name": "Zach Hyman",
+    "team": "EDM",
+    "goals": 38,
+    "assists": 35,
+    "games": 75
+  },
+  {
+    "name": "Sam Reinhart",
+    "team": "FLA",
+    "goals": 32,
+    "assists": 48,
+    "games": 78
+  },
+  {
+    "name": "Kirill Kaprizov",
+    "team": "MIN",
+    "goals": 28,
+    "assists": 52,
+    "games": 75
+  },
+  {
+    "name": "Mark Scheifele",
+    "team": "WPG",
+    "goals": 35,
+    "assists": 42,
+    "games": 80
+  },
+  {
+    "name": "Brad Marchand",
+    "team": "BOS",
+    "goals": 25,
+    "assists": 50,
+    "games": 72
+  },
+  {
+    "name": "William Nylander",
+    "team": "TOR",
+    "goals": 30,
+    "assists": 42,
+    "games": 78
+  },
+  {
+    "name": "Elias Pettersson",
+    "team": "VAN",
+    "goals": 22,
+    "assists": 48,
+    "games": 75
+  },
+  {
+    "name": "Alex Ovechkin",
+    "team": "WSH",
+    "goals": 25,
+    "assists": 20,
+    "games": 65
+  },
+  {
+    "name": "Erik Karlsson",
+    "team": "PIT",
+    "goals": 8,
+    "assists": 45,
+    "games": 78
+  },
+  {
+    "name": "Quinn Hughes",
+    "team": "VAN",
+    "goals": 12,
+    "assists": 55,
+    "games": 80
+  },
+  {
+    "name": "Roman Josi",
+    "team": "NSH",
+    "goals": 15,
+    "assists": 40,
+    "games": 75
+  },
+  {
+    "name": "Victor Hedman",
+    "team": "TBL",
+    "goals": 10,
+    "assists": 48,
+    "games": 78
+  },
+  {
+    "name": "Connor Bedard",
+    "team": "CHI",
+    "goals": 18,
+    "assists": 25,
+    "games": 70
+  },
+  {
+    "name": "Tim Stutzle",
+    "team": "OTT",
+    "goals": 22,
+    "assists": 38,
+    "games": 75
+  },
+  {
+    "name": "Jack Hughes",
+    "team": "NJD",
+    "goals": 25,
+    "assists": 42,
+    "games": 72
+  },
+  {
+    "name": "Brayden Point",
+    "team": "TBL",
+    "goals": 28,
+    "assists": 35,
+    "games": 70
+  },
+  {
+    "name": "Sebastian Aho",
+    "team": "CAR",
+    "goals": 22,
+    "assists": 45,
+    "games": 78
+  }
+]

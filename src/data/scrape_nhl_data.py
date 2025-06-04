@@ -1,7 +1,7 @@
 import sys
 import time
 from datetime import datetime
-from functions import init_db, get_game_ids_for_season, fetch_and_store_game_data, fetch_nhl_api
+from .functions import init_db, get_game_ids_for_season, fetch_and_store_game_data, fetch_nhl_api
 
 def test_api_connection():
     '''Test if the NHL API is working and what the data structure looks like'''
