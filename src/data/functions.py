@@ -3,7 +3,10 @@ import requests
 import numpy as np
 import time
 import sqlite3
-from .definitions import *
+try:
+    from .definitions import *
+except ImportError:
+    from definitions import *
 
 def createFullName(row):
     '''
@@ -112,7 +115,7 @@ def get_game_ids_for_season(season):
                     for game in date_entry.get('games', []):
                         # Only include regular season games (gameType = 2)
                         if game.get('gameType') == 2:
-                game_ids.append(game['id'])
+                            game_ids.append(game['id'])
         
         # Remove duplicates and sort
         game_ids = sorted(list(set(game_ids)))
@@ -175,7 +178,7 @@ def get_all_game_ids_for_date_range(start_date, end_date):
                 for week in data['gameWeek']:
                     for date_entry in week.get('games', []):
                         for game in date_entry.get('games', []):
-                            game_ids.append(game['id'])
+                                        game_ids.append(game['id'])
             
             # Move to next date (simplified - just increment day)
             # In production, you'd want proper date handling

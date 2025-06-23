@@ -4,6 +4,11 @@
 
 This project develops a comprehensive machine learning system to predict NHL shot success and calculate Expected Goals (xG) using historical NHL event data. The project demonstrates advanced techniques in sports analytics, temporal validation, business constraint optimization, and real-time deployment considerations.
 
+**🎯 Academic Deliverables:**
+- **Deliverable 1**: Jupyter notebook with EDA, model analysis, and results (see `src/analysis/nhl_xg_analysis.ipynb`)
+- **Deliverable 2**: Video presentation/demo (see `PRESENTATION_SCRIPT.md` and `PRESENTATION_READY.md`)
+- **Deliverable 3**: Public GitHub repository with complete work
+
 ## 🎯 Project Goals
 
 ### Primary Objective
@@ -30,13 +35,15 @@ Predict the outcome of individual NHL shot events (goal vs save) and estimate Ex
 
 #### **Analysis (`src/analysis/`)**
 - **`run_analysis.py`** - Command-line interface for running different analysis types
+- **`nhl_xg_analysis.ipynb`** - Main analysis notebook (Deliverable 1)
+- **`nhl_business_analysis.ipynb`** - Business analysis notebook
 
 #### **Visualization (`src/visualization/`)**
 - **`report_visualization_package.py`** - Professional visualization suite (8 publication-ready charts)
 
 ### 📚 **Documentation (`docs/`)**
 - **`FINAL_ACADEMIC_REPORT.md`** - Complete academic report for submission
-- **`PROJECT_SUMMARY.md`** - Comprehensive project summary and findings
+- **`project_summary.md`** - Comprehensive project summary and findings
 
 ### 🖼️ **Visualizations (`report-images/`)**
 Professional visualizations for academic and business presentation:
@@ -46,18 +53,24 @@ Professional visualizations for academic and business presentation:
 - Technical architecture diagrams
 
 ### 📊 **Data & Database**
-- **`nhl_stats.db`** (45MB) - SQLite database with NHL event data
+- **`nhl_stats.db`** (95MB) - SQLite database with NHL event data
   - 274 games, 98,825 total events
   - 18,470 shots on net with 1,938 goals
   - Tables: games, events, players, teams
 
-### 🗂️ **Legacy Files (`archive/`, `Python/archive/`)**
-- Contains 30+ legacy analysis files that were consolidated
+### 🗂️ **Legacy Files (`archive/`)**
+- Contains legacy analysis files that were consolidated
 - Preserved for reference and reproducibility
+
+### 🎬 **Presentation Materials**
+- **`PRESENTATION_SCRIPT.md`** - Complete 10-minute presentation script
+- **`PRESENTATION_READY.md`** - Presentation setup and recording guide
+- **`demo_scenarios.json`** - Demo scenarios for live presentation
+- **`prepare_presentation_demo.py`** - Demo preparation script
 
 ### 🔧 **Configuration & Setup**
 - **`requirements.txt`** - Python dependencies
-- **`run_full_scrape.py`** - Data collection script
+- **`run_nhl_analysis.py`** - Quick analysis runner
 - **`.gitignore`** - Git ignore patterns
 
 ## 🚀 Quick Start
@@ -82,6 +95,11 @@ python run_analysis.py --analysis business
 ```bash
 cd ../visualization
 python report_visualization_package.py
+```
+
+### 5. Quick Analysis
+```bash
+./run_nhl_analysis.py
 ```
 
 ## 📈 Key Results
@@ -137,6 +155,33 @@ This project is structured for academic submission with:
 - **Professional visualizations** ready for publication
 - **Honest evaluation** with realistic performance expectations
 - **Real-world applicability** with business deployment analysis
+
+## 🎬 Presentation & Demo
+
+### **Video Presentation (Deliverable 2)**
+- **Duration**: 10 minutes (5-15 min range)
+- **Format**: Screen recording with live demos
+- **Content**: Problem → ML approach → Results → Demo
+- **Script**: See `PRESENTATION_SCRIPT.md`
+- **Setup Guide**: See `PRESENTATION_READY.md`
+
+### **Key Demo Commands**
+```bash
+# Data collection demo
+python src/data/scrape_nhl_data.py
+
+# Model training demo  
+python src/analysis/run_analysis.py --analysis basic
+
+# Business analysis demo
+python src/analysis/run_analysis.py --analysis business
+
+# Visualization generation
+python src/visualization/report_visualization_package.py
+
+# Quick analysis
+./run_nhl_analysis.py
+```
 
 ## 🔮 Future Work
 

@@ -1,7 +1,15 @@
 import sys
 import time
+import os
 from datetime import datetime
-from .functions import init_db, get_game_ids_for_season, fetch_and_store_game_data, fetch_nhl_api
+
+# Handle imports for both module and standalone execution
+try:
+    from .functions import init_db, get_game_ids_for_season, fetch_and_store_game_data, fetch_nhl_api
+except ImportError:
+    # Add the current directory to path for standalone execution
+    sys.path.insert(0, os.path.dirname(__file__))
+    from functions import init_db, get_game_ids_for_season, fetch_and_store_game_data, fetch_nhl_api
 
 def test_api_connection():
     '''Test if the NHL API is working and what the data structure looks like'''

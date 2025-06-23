@@ -9,7 +9,10 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import precision_recall_curve, f1_score
-from .nhl_xg_core import NHLxGAnalyzer
+try:
+    from .nhl_xg_core import NHLxGAnalyzer
+except ImportError:
+    from nhl_xg_core import NHLxGAnalyzer
 import warnings
 warnings.filterwarnings('ignore')
 

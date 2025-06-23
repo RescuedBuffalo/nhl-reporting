@@ -867,6 +867,68 @@ class OptimizedNHLxGAnalyzer:
         
         return results_df
 
+    def predict_single_shot(self, shot_features):
+        """
+        Predict xG and review flag for a single shot event.
+        
+        Args:
+            shot_features (dict): Dictionary containing shot features (e.g., 'x', 'y', 'period', 'periodTime', 'position').
+        
+        Returns:
+            dict: Contains 'xG' (predicted probability) and 'review_flag' (boolean).
+        """
+        if not self.results:
+            raise ValueError("No trained models available. Please train models first.")
+        
+        # Convert shot_features to a DataFrame
+        df = pd.DataFrame([shot_features])
+        
+        # Engineer features for the shot
+        df['periodTime_seconds'] = df['periodTime'].apply(lambda x: int(x.split(':')[0]) * 60 + int(x.split(':')[1]) if isinstance(x, str) else 0)
+        df['distance_to_net'] = np.sqrt((df['x'] - 89)**2 + df['y']**2)
+        df['angle_to_net'] = np.abs(np.arctan2(df['y'], 89 - df['x']) * 180 / np.pi)
+        df['distance_squared'] = df['distance_to_net'] ** 2
+        df['angle_squared'] = df['angle_to_net'] ** 2
+        df['distance_angle_interaction'] = df['distance_to_net'] * df['angle_to_net']
+        df['in_crease'] = ((df['x'] >= 85) & (np.abs(df['y']) <= 4)).astype(int)
+        df['in_slot'] = ((df['x'] >= 75) & (df['x'] <= 89) & (np.abs(df['y']) <= 22)).astype(int)
+        df['from_point'] = ((df['x'] <= 65) & (np.abs(df['y']) >= 15)).astype(int)
+        df['high_danger'] = ((df['x'] >= 80) & (np.abs(df['y']) <= 15)).astype(int)
+        df['low_danger'] = ((df['x'] <= 60) | (np.abs(df['y']) >= 30)).astype(int)
+        df['total_seconds'] = (df['period'] - 1) * 1200 + df['periodTime_seconds']
+        df['time_remaining_period'] = 1200 - df['periodTime_seconds']
+        df['final_two_minutes'] = (df['time_remaining_period'] <= 120).astype(int)
+        df['final_minute'] = (df['time_remaining_period'] <= 60).astype(int)
+        df['overtime_shot'] = (df['period'] > 3).astype(int)
+        df['early_period'] = (df['periodTime_seconds'] <= 300).astype(int)
+        df['is_forward'] = df['position'].isin(['C', 'L', 'R', 'LW', 'RW']).astype(int)
+        df['is_defenseman'] = df['position'].isin(['D']).astype(int)
+        df['is_center'] = df['position'].isin(['C']).astype(int)
+        df['is_winger'] = df['position'].isin(['L', 'R', 'LW', 'RW']).astype(int)
+        df['close_shot'] = (df['distance_to_net'] <= 15).astype(int)
+        df['medium_shot'] = ((df['distance_to_net'] > 15) & (df['distance_to_net'] <= 35)).astype(int)
+        df['long_shot'] = (df['distance_to_net'] > 35).astype(int)
+        df['very_close_shot'] = (df['distance_to_net'] <= 10).astype(int)
+        df['sharp_angle'] = (df['angle_to_net'] >= 45).astype(int)
+        df['moderate_angle'] = ((df['angle_to_net'] >= 15) & (df['angle_to_net'] < 45)).astype(int)
+        df['straight_on'] = (df['angle_to_net'] < 15).astype(int)
+        df['very_sharp_angle'] = (df['angle_to_net'] >= 60).astype(int)
+        
+        # Use the 'Full_Features' feature set
+        feature_set = self.get_feature_sets()['Full_Features']
+        X = df[feature_set].fillna(0)
+        
+        # Use the best model (e.g., the first model in self.results)
+        best_model_name = list(self.results.keys())[0]
+        model = self.results[best_model_name]['model']
+        optimal_threshold = self.results[best_model_name]['optimal_threshold']
+        
+        # Predict xG
+        xg = model.predict_proba(X)[0, 1]
+        review_flag = xg >= optimal_threshold
+        
+        return {'xG': xg, 'review_flag': review_flag}
+
 def main():
     """Run comprehensive optimized model analysis with extensive hyperparameter tuning."""
     print("🚀 COMPREHENSIVE NHL xG MODEL OPTIMIZATION")

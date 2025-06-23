@@ -5,8 +5,13 @@ Simple script to run different types of analysis using consolidated modules
 
 import sys
 import argparse
-from nhl_xg_core import NHLxGAnalyzer
-from nhl_business_analysis import NHLBusinessAnalyzer
+import os
+
+# Add parent directory to path to import from src
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
+
+from models.nhl_xg_core import NHLxGAnalyzer
+from models.nhl_business_analysis import NHLBusinessAnalyzer
 
 def run_basic_analysis():
     """Run basic xG model analysis."""
