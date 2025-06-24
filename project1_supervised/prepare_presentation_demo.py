@@ -10,8 +10,8 @@ import subprocess
 import time
 from pathlib import Path
 
-# Add src to path
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'src'))
+# Add data_pipeline/src to path
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'data_pipeline', 'src'))
 
 def print_section(title):
     """Print a formatted section header."""
@@ -80,7 +80,7 @@ def check_data_availability():
             return False
     else:
         print(f"❌ Database not found: {db_path}")
-        print("💡 Run data collection first: python src/data/scrape_nhl_data.py")
+        print("💡 Run data collection first: python ../data_pipeline/src/data/scrape_nhl_data.py")
         return False
 
 def test_core_functionality():
@@ -89,13 +89,13 @@ def test_core_functionality():
     
     # Test basic analysis
     success1 = run_command_safely(
-        "python src/analysis/run_analysis.py --analysis basic",
+        "python ../data_pipeline/src/analysis/run_analysis.py --analysis basic",
         "Testing basic xG analysis"
     )
     
     # Test business analysis
     success2 = run_command_safely(
-        "python src/analysis/run_analysis.py --analysis business", 
+        "python ../data_pipeline/src/analysis/run_analysis.py --analysis business", 
         "Testing business constraint analysis"
     )
     
@@ -116,7 +116,7 @@ def generate_presentation_visuals():
     
     # Generate comprehensive visualizations
     success = run_command_safely(
-        "python src/visualization/report_visualization_package.py",
+        "python ../data_pipeline/src/visualization/report_visualization_package.py",
         "Generating professional visualizations"
     )
     
@@ -156,17 +156,17 @@ def test_demo_scenarios():
     scenarios = [
         {
             "name": "Data Verification",
-            "command": "python src/data/verify_data.py",
+            "command": "python ../data_pipeline/src/data/verify_data.py",
             "description": "Verify data quality and statistics"
         },
         {
             "name": "Model Training Demo", 
-            "command": "python -c \"from src.models.nhl_xg_core import NHLxGAnalyzer; a=NHLxGAnalyzer(); a.load_shot_data(); print('✅ Data loaded successfully')\"",
+            "command": "cd ../data_pipeline/src && python -c \"from models.nhl_xg_core import NHLxGAnalyzer; import os; os.chdir('../../project1_supervised'); a=NHLxGAnalyzer(); a.load_shot_data(); print('✅ Data loaded successfully')\"",
             "description": "Quick model loading test"
         },
         {
             "name": "Feature Engineering Demo",
-            "command": "python -c \"from src.models.nhl_xg_core import NHLxGAnalyzer; a=NHLxGAnalyzer(); a.load_shot_data(); a.engineer_features(); print(f'✅ Engineered features for {len(a.shot_events):,} shots')\"",
+            "command": "cd ../data_pipeline/src && python -c \"from models.nhl_xg_core import NHLxGAnalyzer; import os; os.chdir('../../project1_supervised'); a=NHLxGAnalyzer(); a.load_shot_data(); a.engineer_features(); print(f'✅ Engineered features for {len(a.shot_events):,} shots')\"",
             "description": "Feature engineering demonstration"
         }
     ]
